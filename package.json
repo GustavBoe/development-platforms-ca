@@ -1,0 +1,36 @@
+{
+  "name": "development-platforms-ca",
+  "version": "1.0.0",
+  "description": "A backend solution for the development platforms course assignment. A REST API with authenticated endpoints.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GustavBoe/development-platforms-ca.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/GustavBoe/development-platforms-ca/issues"
+  },
+  "homepage": "https://github.com/GustavBoe/development-platforms-ca#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "mysql2": "^3.16.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.0.9",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
