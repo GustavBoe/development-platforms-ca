@@ -5,6 +5,46 @@ import {validateUserId} from "../middleware/validation.js"
 
 const router = Router();
 
+/**
+ * @swagger
+ * /users/{id}:
+ *   delete:
+ *     summary: Delete a user by ID
+ *     description: Removes a user from the database based on the provided user ID. Requires a valid user ID.
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the user to delete
+ *         example: 1
+ *     responses:
+ *       204:
+ *         description: User successfully deleted (no content)
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "User not found"
+ *       500:
+ *         description: Server error during deletion
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Unable to delete user"
+ */
 router.delete("users/:id", validateUserId,async (req,res)=>{
   try{
     const userId = Number(req.params.id);

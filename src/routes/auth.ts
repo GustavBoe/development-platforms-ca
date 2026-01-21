@@ -1,43 +1,76 @@
 import { Router } from "express";
+import bcrypt from "bcrypt";
 import {pool} from "../database.js";
 import { ResultSetHeader } from "mysql2";
 import { User, UserResponse } from "../interfaces.js";
+import { validateLogin, validateRegistration } from "../middleware/auth-validation.js";
+import { generateToken } from "../utils/jwt.js";
 
 const router = Router();
-
-/*HUSK Å LEGGE INN JWT og parameterised queries!
-app.post("/articles", validatePost(req,res)=>{
-const {title,body,category,submitted_by}=req.body
-  if (!title || !body) {
-    return res.status(400).json({ error: "Title and body are required" });
-  }
-   const article: Article = {title, body, category, submitted_by };
-  res.status(201).json(article);
-})*/
-
-//HUSK Å LEGGE INN JWT og parameterised queries!
-router.post("/auth/register", async(req,res)=>{
+router.post("/register", validateRegistration, async (req, res)=>{
   try{
-    const {email, password_hash} = req.body;
-    if(!email || !password_hash){
-      return res.status(400).json({error:"Email and password required"})
+    const {email, password} = req.body;
+
+    const [rows] = await pool.execute("SELECT * FROM users WHERE email = ?",[email]);
+    const existingUsers = rows as User[];
+    if (existingUsers.length > 0){
+      return res.status(400).json({
+        error:"User already exists"
+      });
     }
-    const [result]: [ResultSetHeader, any] = await pool.execute(
-      "INSERT INTO users(email, password) VALUES (?,?)",[email, password_hash]
-    );
- 
-    const user: User = {id:result.insertId, email, password_hash};
-    res.status(201).json(user)
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password,saltRounds);
+
+    const [result]:[ResultSetHeader, any] = await pool.execute("INSERT INTO users (email, password_hash) VALUES (?,?)", [email,hashedPassword]);
+
+    const userResponse: UserResponse = {
+      id:result.insertId,
+      email,
+      
+    };
+    res.status(201).json({message:"User successfully registered", user: userResponse});
+
   }
   catch(error){
-    console.error("Database error", error);
-    res.status(500).json({error:"Failed to create user"})
+    console.error("Registration error:", error);
+    res.status(500).json({error:"Failed to register user",})
   }
 })
+router.post("/login", validateLogin, async(req,res)=>{
+  try{
+    const{email, password} = req.body;
+    
+    const [rows] = await pool.execute("SELECT id, email, password_hash FROM users WHERE email = ?", [email]);
 
-//HUSK Å LEGGE INN JWT og parameterised queries!
-/*app.post("/auth/login", validateUser(req,res)=>{})*/
-/*
+    const users = rows as User[];
 
-*/ 
+    if(users.length === 0){
+      return res.status(404).json({error:"Invalid email or password"});
+    }
+    const user = users[0];
+    const validPassword = bcrypt.compare(password, user.password_hash!)
+
+    if(!validPassword){
+      return res.status(401).json({error:"Invalid email or password",});
+    }
+
+    const token = generateToken(user.id);
+
+    const userResponse: UserResponse = {
+      id: user.id,
+      email:user.email,
+      
+    };
+
+    res.json({
+      message:"Login successful",
+      user:userResponse,
+      token,
+    });
+  }
+  catch(error){
+console.error("Login error:", error);
+res.status(500).json({error:"Failed to log in"})
+  }
+})
 export default router;
