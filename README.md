@@ -1,6 +1,7 @@
 # development-platforms-ca
 
 A backend solution for the development platforms course assignment. A REST API with authenticated endpoints. Code from the modules provided by Noroff, with changes to handle the CA task.
+//
 **Motivation**
 Why i chose option 1:
 I chose the first option due to the fact that I have seen SQL be a valued trait in many job listings and that it simply interested me more than using Supabase.
