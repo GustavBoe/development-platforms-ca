@@ -2,12 +2,13 @@ import { Router } from "express";
 import {pool} from "../database.js"
 import { ResultSetHeader } from "mysql2";
 import {validateUserId} from "../middleware/validation.js"
+import { authenticateToken } from "../middleware/auth-validation.js";
 
 const router = Router();
 
 /**
  * @swagger
- * /users/{id}:
+ * /user/{id}:
  *   delete:
  *     summary: Delete a user by ID
  *     description: Removes a user from the database based on the provided user ID. Requires a valid user ID.
@@ -45,7 +46,7 @@ const router = Router();
  *                   type: string
  *                   example: "Unable to delete user"
  */
-router.delete("users/:id", validateUserId,async (req,res)=>{
+router.delete("/:id",authenticateToken, validateUserId,async (req,res)=>{
   try{
     const userId = Number(req.params.id);
    

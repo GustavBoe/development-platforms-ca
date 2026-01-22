@@ -2,7 +2,8 @@ import { Router , Request, Response, NextFunction} from "express";
 import { ResultSetHeader } from "mysql2"; 
 import {pool} from "../database.js";
 import {User, Article, ArticleWithUser} from "../interfaces.js";
-import { validateRequiredArticleData } from "../middleware/validation.js";
+import { validateRequiredArticleData, validateUserId } from "../middleware/validation.js";
+import { authenticateToken } from "../middleware/auth-validation.js";
 
 const router = Router();
 
@@ -196,7 +197,7 @@ catch(error){
  *                   type: string
  *                   example: "Failed to create article"
  */
-router.post("/",validateRequiredArticleData, async(req,res)=>{
+router.post("/",authenticateToken,validateRequiredArticleData, validateUserId ,async(req,res)=>{
   try{
     const {title, body} = req.body;
 
@@ -261,7 +262,7 @@ router.post("/",validateRequiredArticleData, async(req,res)=>{
  *                   type: string
  *                   example: "Unable to delete article"
  */
-router.delete("/:id", async (req,res)=>{
+router.delete("/:id",authenticateToken,validateUserId, async (req,res)=>{
   try{
     const articleId = Number(req.params.id);
     if(isNaN(articleId)){
