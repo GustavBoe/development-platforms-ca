@@ -11,9 +11,9 @@ I found it difficult to implement the interfaces I made, without having the code
 
 As benefits go, I think building an API and database gives you more control of your own data, which in turn makes it safer. Another plus is that it is free to do and maintain.\
 
-_Installation_
-npm install
+_Installation_\
+npm install\
 
-_Scripts_
-For development: npm run dev
+_Scripts_\
+For development: npm run dev\
 For production: npm run build
