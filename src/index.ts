@@ -29,22 +29,7 @@ const swaggerSpec = swaggerJSDoc(swaggerOptions);
 app.use(express.json());
 app.use(cors())
 
-function checkAuth(req:Request, res:Response, next:NextFunction) {
-  const authHeader = req.headers.authorization;
 
-
-  if (!authHeader) {
-    return res.status(401).json({ error: "Missing authorization header" });
-  }
-
- 
-  if (authHeader !== "Bearer secret123") {
-    return res.status(403).json({ error: "Access denied" });
-  }
-
-
-  next();
-}
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/articles", articleRoutes);
 app.use("/auth", authRoutes);
