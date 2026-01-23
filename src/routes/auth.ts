@@ -203,6 +203,7 @@ router.post("/login", validateLogin, async(req,res)=>{
     const userResponse: UserResponse = {
       id: user.id,
       email:user.email,
+     
     };
 
     res.json({

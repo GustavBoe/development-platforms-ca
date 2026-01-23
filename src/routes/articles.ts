@@ -66,7 +66,8 @@ try{
   
   const offset = (page-1) * limit;
   
-  const [rows] = await pool.execute("SELECT * FROM articles LIMIT ? OFFSET ?", [limit.toString(), offset.toString()]);
+  const [rows] = await pool.execute(
+    "SELECT * FROM articles LIMIT ? OFFSET ?", [limit.toString(), offset.toString()]);
   
   const articles = rows as Article[];
   
@@ -79,67 +80,6 @@ catch(error){
 }
 });
 
-/**
- * @swagger
- * /articles/{id}:
- *   get:
- *     summary: Get a single article by ID
- *     description: Retrieves a specific article from the database using the article ID.
- *     tags:
- *       - Articles
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The ID of the article to retrieve
- *         example: 1
- *     responses:
- *       200:
- *         description: Article retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                   title:
- *                     type: string
- *                   content:
- *                     type: string
- *                   created_at:
- *                     type: string
- *                     format: date-time
- *       500:
- *         description: Server error during fetch
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Failed to fetch articles"
- */
-router.get("/:id",async (req, res) => {
-try{
-  const articleId = req.params.id;
-  const [rows] = await pool.execute("SELECT * FROM articles WHERE id = ?", [articleId]);
-  const articles = rows as Article[];
-  
-  res.json(articles
-  );
-  
-}
-catch(error){
-  console.error("Database query error:", error);
-  res.status(500).json({error:"Failed to fetch articles",});
-}
-});
 
 /**
  * @swagger
@@ -197,7 +137,7 @@ catch(error){
  *                   type: string
  *                   example: "Failed to create article"
  */
-router.post("/",authenticateToken,validateRequiredArticleData, validateUserId ,async(req,res)=>{
+router.post("/:id",authenticateToken,validateUserId ,validateRequiredArticleData,async(req,res)=>{
   try{
     const {title, body} = req.body;
 
@@ -212,74 +152,6 @@ router.post("/",authenticateToken,validateRequiredArticleData, validateUserId ,a
   }
 });
 
-/**
- * @swagger
- * /articles/{id}:
- *   delete:
- *     summary: Delete an article by ID
- *     description: Removes a specific article from the database using the article ID. Requires a valid numeric ID.
- *     tags:
- *       - Articles
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The ID of the article to delete
- *         example: 1
- *     responses:
- *       204:
- *         description: Article successfully deleted (no content)
- *       400:
- *         description: Invalid article ID provided
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Invalid article ID"
- *       404:
- *         description: Article not found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Article not found"
- *       500:
- *         description: Server error during deletion
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Unable to delete article"
- */
-router.delete("/:id",authenticateToken,validateUserId, async (req,res)=>{
-  try{
-    const articleId = Number(req.params.id);
-    if(isNaN(articleId)){
-      return res.status(400).json({
-        error:"Invalid article ID",
-      });
-    }
-    const [result]:[ResultSetHeader, any] = await pool.execute("DELETE FROM articles WHERE id = ?",[articleId]);
-    if(result.affectedRows === 0){
-      return res.status(404).json({error:"Article not found"})
-    }
-    res.status(204).send();
-  }
-  catch(error){
-    console.error("Database error:", error);
-    res.status(500).json({error:"Unable to delete article"});
-  }
-})
+
 
 export default router;

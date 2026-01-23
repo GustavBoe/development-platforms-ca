@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import articleRoutes from "./routes/articles.js";
 import authRoutes from "./routes/auth.js";
-import userRoutes from "./routes/users.js";
+
 import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 
@@ -33,7 +33,7 @@ app.use(cors())
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/articles", articleRoutes);
 app.use("/auth", authRoutes);
-app.use("/user", userRoutes);
+
 
 app.use((req, res) => {
   res.status(404).json({
