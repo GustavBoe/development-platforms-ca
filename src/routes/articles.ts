@@ -1,8 +1,8 @@
 import { Router , Request, Response, NextFunction} from "express";
 import { ResultSetHeader } from "mysql2"; 
 import {pool} from "../database.js";
-import {User, Article, ArticleWithUser} from "../interfaces.js";
-import { validateRequiredArticleData, validateUserId } from "../middleware/validation.js";
+import {User, Article} from "../interfaces.js";
+import { validateRequiredArticleData} from "../middleware/validation.js";
 import { authenticateToken } from "../middleware/auth-validation.js";
 
 const router = Router();
@@ -137,20 +137,22 @@ catch(error){
  *                   type: string
  *                   example: "Failed to create article"
  */
-router.post("/:id",authenticateToken,validateUserId ,validateRequiredArticleData,async(req,res)=>{
+router.post("/",authenticateToken,validateRequiredArticleData,async(req,res)=>{
   try{
-    const {title, body} = req.body;
+    const {title, body, category} = req.body;
+    const submitted_by = req.user!.id;
 
-    const [result]: [ResultSetHeader, any] = await pool.execute("INSERT INTO articles (title, body) VALUES (?,?)", [title, body])
+    const [result]: [ResultSetHeader, any] = await pool.execute('INSERT INTO articles (title, body, category, submitted_by) VALUES (?,?,?,?)', [title, body, category, submitted_by])
     
-    const article: Article = {id:result.insertId, title, body};
-    res.status(201).json(article);
+    res.status(201).json({message: "Article created",
+      articleId: (result as any).insertId,});
   }
   catch(error){
     console.error("Database error:", error);
     res.status(500).json({error: "Failed to create article"});
   }
 });
+
 
 
 

@@ -15,7 +15,7 @@ export interface Article{
   title:string;
   body?:string;
   category?:string;
-  //submitted_by:number;
+  submitted_by:number;
   //created_at:string;
 }
 export interface ArticleWithUser extends Article{
