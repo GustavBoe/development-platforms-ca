@@ -23,7 +23,7 @@ SET @@SESSION.SQL_LOG_BIN= 0;
 -- GTID state at the beginning of the backup 
 --
 
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '805dc926-ead7-11f0-81a7-14ccc574f676:1-52';
+SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '805dc926-ead7-11f0-81a7-14ccc574f676:1-58';
 
 --
 -- Table structure for table `articles`
@@ -42,7 +42,7 @@ CREATE TABLE `articles` (
   PRIMARY KEY (`id`),
   KEY `submitted_by` (`submitted_by`),
   CONSTRAINT `articles_ibfk_1` FOREIGN KEY (`submitted_by`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -51,6 +51,7 @@ CREATE TABLE `articles` (
 
 LOCK TABLES `articles` WRITE;
 /*!40000 ALTER TABLE `articles` DISABLE KEYS */;
+INSERT INTO `articles` VALUES (4,'Second title from postman','The second body of a postman','fantasy',2,'2026-01-23 11:17:05'),(5,'Third title from postman','The third body of a postman','fantasy',2,'2026-01-23 11:21:14'),(6,'4th title from postman','The 4th body of a postman','fantasy',2,'2026-01-23 11:21:42');
 /*!40000 ALTER TABLE `articles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -90,4 +91,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-01-22 10:14:20
+-- Dump completed on 2026-01-23 12:26:56
