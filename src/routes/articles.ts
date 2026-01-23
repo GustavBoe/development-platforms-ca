@@ -42,8 +42,12 @@ const router = Router();
  *                     type: integer
  *                   title:
  *                     type: string
- *                   content:
+ *                   body:
  *                     type: string
+ *                   category:
+ *                     type: string
+ *                   submitted_by:
+ *                     type: integer
  *                   created_at:
  *                     type: string
  *                     format: date-time
@@ -89,6 +93,8 @@ catch(error){
  *     description: Creates a new article in the database with the provided title and body.
  *     tags:
  *       - Articles
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -107,6 +113,10 @@ catch(error){
  *                 type: string
  *                 description: The body content of the article
  *                 example: "This is the content of my article."
+ *               category:
+ *                 type: string
+ *                 description: The category of the article (optional)
+ *                 example: "Technology"
  *     responses:
  *       201:
  *         description: Article successfully created
@@ -115,17 +125,16 @@ catch(error){
  *             schema:
  *               type: object
  *               properties:
- *                 id:
+ *                 message:
+ *                   type: string
+ *                   example: "Article created"
+ *                 articleId:
  *                   type: integer
  *                   example: 1
- *                 title:
- *                   type: string
- *                   example: "My First Article"
- *                 body:
- *                   type: string
- *                   example: "This is the content of my article."
  *       400:
  *         description: Missing or invalid required fields
+ *       401:
+ *         description: Unauthorized - authentication token required
  *       500:
  *         description: Server error during article creation
  *         content:
